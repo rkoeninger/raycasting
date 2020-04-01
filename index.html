@@ -2,7 +2,8 @@
 <html>
   <head>
     <title>Raycasting</title>
-    <script src="index.js"></script>
+    <script src="state.js"></script>
+    <script src="draw.js"></script>
   </head>
   <body>
     <canvas></canvas>
@@ -34,13 +35,22 @@ canvas {
         canvas.height = canvas.clientHeight;
         draw(g, canvas.width, canvas.height);
       };
-      console.log(document.body.onresize);
+      console.log(document.body.onresize); // This somehow allows onresize to work
       document.body.onresize = resize;
       resize();
       document.onmousemove = ({ clientX, clientY }) =>
         draw(g, canvas.width, canvas.height, clientX, clientY);
       document.onmouseleave = () =>
         draw(g, canvas.width, canvas.height);
+      document.onmousedown = ({ clientX, clientY }) => {
+        if (input.x !== undefined && input.y !== undefined) {
+          edges.push({ x0: input.x, y0: input.y, x1: clientX, y1: clientY });
+          input.x = input.y = undefined;
+        } else {
+          input.x = clientX;
+          input.y = clientY;
+        }
+      };
     </script>
   </body>
 </html>
