@@ -28,15 +28,19 @@ canvas {
     </style>
     <script>
       const canvas = document.querySelector('canvas');
+      const g = canvas.getContext('2d');
       const resize = () => {
-        const [w, h] = [canvas.clientWidth, canvas.clientHeight];
-        canvas.width = w;
-        canvas.height = h;
-        main(canvas.getContext('2d'), w, h);
+        canvas.width = canvas.clientWidth;
+        canvas.height = canvas.clientHeight;
+        draw(g, canvas.width, canvas.height);
       };
       console.log(document.body.onresize);
       document.body.onresize = resize;
       resize();
+      document.onmousemove = ({ clientX, clientY }) =>
+        draw(g, canvas.width, canvas.height, clientX, clientY);
+      document.onmouseleave = () =>
+        draw(g, canvas.width, canvas.height);
     </script>
   </body>
 </html>
