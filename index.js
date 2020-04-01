@@ -15,27 +15,29 @@ const blue = '#268bd2';
 const cyan = '#2aa198';
 const green = '#859900';
 
-const line = (g, x0, y0, x1, y1) => {
-  g.beginPath();
-  g.moveTo(x0, y0);
-  g.lineTo(x1, y1);
-  g.closePath();
-  g.stroke();
-};
-
 const draw = (g, w, h, x, y) => {
   g.fillStyle = base01;
   g.fillRect(0, 0, w, h);
   g.fillStyle = base03;
   g.fillRect(10, 10, w - 20, h - 20);
 
-  g.strokeStyle = violet;
-  g.lineWidth = 2;
-  line(g, 10, 10, x, y);
-  line(g, 10, h - 10, x, y);
-  line(g, w - 10, 10, x, y);
-  line(g, w - 10, h - 10, x, y);
+  if (x !== undefined && y !== undefined) {
+    g.strokeStyle = violet;
+    g.lineWidth = 2;
 
-  g.fillStyle = magenta;
-  g.fillRect(x - 5, y - 5, 10, 10);
+    g.beginPath();
+    g.moveTo(x, y);
+    g.lineTo(10, 10);
+    g.moveTo(x, y);
+    g.lineTo(10, h - 10);
+    g.moveTo(x, y);
+    g.lineTo(w - 10, 10);
+    g.moveTo(x, y);
+    g.lineTo(w - 10, h - 10);
+    g.closePath();
+    g.stroke();
+
+    g.fillStyle = magenta;
+    g.fillRect(x - 5, y - 5, 10, 10);
+  }
 };
