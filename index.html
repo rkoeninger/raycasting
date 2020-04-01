@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Raycasting</title>
+    <script src="index.js"></script>
+  </head>
+  <body>
+    <canvas></canvas>
+    <style>
+html {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+}
+body {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+}
+canvas {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+}
+    </style>
+    <script>
+      const canvas = document.querySelector('canvas');
+      const resize = () => {
+        const [w, h] = [canvas.clientWidth, canvas.clientHeight];
+        canvas.width = w;
+        canvas.height = h;
+        main(canvas.getContext('2d'), w, h);
+      };
+      console.log(document.body.onresize);
+      document.body.onresize = resize;
+      resize();
+    </script>
+  </body>
+</html>
