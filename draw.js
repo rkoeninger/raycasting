@@ -64,20 +64,32 @@ const segmentIntersection = (x0, y0, x1, y1, x2, y2, x3, y3) => {
   return undefined;
 };
 
+const distanceSquared = (x0, y0, x1, y1) => {
+  const dx = x1 - x0;
+  const dy = y1 - y0;
+  return dx * dx + dy * dy;
+};
+
 const draw = (g, w, h, x, y) => {
   g.fillStyle = base01;
   g.fillRect(0, 0, w, h);
   g.fillStyle = base03;
   g.fillRect(10, 10, w - 20, h - 20);
 
+  let q, dsq;
   g.lineWidth = 1;
   for (const { x0, y0, x1, y1 } of edges) {
     const p = segmentIntersection(x0, y0, x1, y1, x, y, 10, 10);
     if (p !== undefined) {
+      const dsp = distanceSquared(10, 10, p.x, p.y);
+      if (dsq === undefined || dsp < dsq) {
+        q = p;
+        dsq = dsp;
+      }
       g.fillStyle = orange;
       g.fillRect(p.x - 5, p.y - 5, 10, 10);
     }
-    g.strokeStyle = p ? red : base0;
+    g.strokeStyle = p !== undefined ? red : base0;
     g.beginPath();
     g.moveTo(x0, y0);
     g.lineTo(x1, y1);
@@ -99,7 +111,11 @@ const draw = (g, w, h, x, y) => {
     g.strokeStyle = violet;
     g.lineWidth = 2;
     g.beginPath();
-    g.moveTo(x, y);
+    if (q === undefined) {
+      g.moveTo(x, y);
+    } else {
+      g.moveTo(q.x, q.y);
+    }
     g.lineTo(10, 10);
     g.closePath();
     g.stroke();
