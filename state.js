@@ -1,2 +1,2 @@
 const edges = [];
-let input = { x: undefined, y: undefined };
+const input = { x: undefined, y: undefined };

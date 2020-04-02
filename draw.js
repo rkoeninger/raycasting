@@ -70,29 +70,34 @@ const distanceSquared = (x0, y0, x1, y1) => {
   return dx * dx + dy * dy;
 };
 
-const draw = (g, w, h, x, y) => {
-  g.fillStyle = base01;
-  g.fillRect(0, 0, w, h);
-  g.fillStyle = base03;
-  g.fillRect(10, 10, w - 20, h - 20);
-
-  let q, dsq;
+const drawRay = (g, x, y, mx, my) => {
+  let q, dsq, ql;
   g.lineWidth = 1;
   for (const { x0, y0, x1, y1 } of edges) {
-    const p = segmentIntersection(x0, y0, x1, y1, x, y, 10, 10);
-    if (p !== undefined) {
-      const dsp = distanceSquared(10, 10, p.x, p.y);
-      if (dsq === undefined || dsp < dsq) {
-        q = p;
-        dsq = dsp;
+    if (x !== undefined && y !== undefined) {
+      const p = segmentIntersection(x0, y0, x1, y1, x, y, 10, 10);
+      if (p !== undefined) {
+        const dsp = distanceSquared(10, 10, p.x, p.y);
+        if (dsq === undefined || dsp < dsq) {
+          q = p;
+          dsq = dsp;
+          ql = { x0, y0, x1, y1 };
+        }
       }
-      g.fillStyle = orange;
-      g.fillRect(p.x - 5, p.y - 5, 10, 10);
     }
-    g.strokeStyle = p !== undefined ? red : base0;
+    g.strokeStyle = base0;
     g.beginPath();
     g.moveTo(x0, y0);
     g.lineTo(x1, y1);
+    g.closePath();
+    g.stroke();
+  }
+
+  if (q !== undefined) {
+    g.strokeStyle = red;
+    g.beginPath();
+    g.moveTo(ql.x0, ql.y0);
+    g.lineTo(ql.x1, ql.y1);
     g.closePath();
     g.stroke();
   }
@@ -102,7 +107,7 @@ const draw = (g, w, h, x, y) => {
       g.strokeStyle = base3;
       g.lineWidth = 1;
       g.beginPath();
-      g.moveTo(x, y);
+      g.moveTo(mx, my);
       g.lineTo(input.x, input.y);
       g.closePath();
       g.stroke();
@@ -119,7 +124,20 @@ const draw = (g, w, h, x, y) => {
     g.lineTo(10, 10);
     g.closePath();
     g.stroke();
-    g.fillStyle = magenta;
-    g.fillRect(x - 5, y - 5, 10, 10);
+  }
+};
+
+const range = (i, j) => [...new Array(j - i).keys()].map(x => x + i);
+
+const draw = (g, w, h, mx, my) => {
+  g.fillStyle = base01;
+  g.fillRect(0, 0, w, h);
+  g.fillStyle = base03;
+  g.fillRect(10, 10, w - 20, h - 20);
+  for (const yn of range(10, h - 10)) {
+    drawRay(g, w - 10, yn, mx, my);
+  }
+  for (const xn of range(10, w - 10)) {
+    drawRay(g, xn, h - 10, mx, my);
   }
 };
