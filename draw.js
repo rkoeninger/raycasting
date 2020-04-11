@@ -52,7 +52,7 @@ const lineIntersection = (x0, y0, x1, y1, x2, y2, x3, y3) => {
   return { x, y }; // intersection
 };
 
-const between = (k, a, b) => ((a <= k) && (k <= b)) || ((b <= k) && (k <= a));
+const between = (k, a, b) => Math.min(a, b) <= k && k <= Math.max(a, b);
 
 const segmentIntersection = (x0, y0, x1, y1, x2, y2, x3, y3) => {
   const p = lineIntersection(x0, y0, x1, y1, x2, y2, x3, y3);
@@ -129,15 +129,76 @@ const drawRay = (g, x, y, mx, my) => {
 
 const range = (i, j) => [...new Array(j - i).keys()].map(x => x + i);
 
+const closestPointToCirlce = (cx, cy, px, py, qx, qy) => {
+  const mpq = (qy - py) / (qx - px);
+  const kpq = py - mpq * px;
+  const mcs = -1 / mpq;
+  const kcs = cy - mcs * cx;
+  const x = (kpq - kcs) / (mcs - mpq);
+  const y = mcs * x + kcs;
+  return { x, y };
+};
+
+const shiftPointAtAngle = (x, y, a, r) => ({
+  x: x + Math.cos(a) * r,
+  y: y + Math.sin(a) * r
+});
+
 const draw = (g, w, h, mx, my) => {
-  g.fillStyle = base01;
-  g.fillRect(0, 0, w, h);
   g.fillStyle = base03;
-  g.fillRect(10, 10, w - 20, h - 20);
-  for (const yn of range(10, h - 10)) {
-    drawRay(g, w - 10, yn, mx, my);
+  g.fillRect(0, 0, w, h);
+
+  g.strokeStyle = blue;
+  for (const { x0, y0, x1, y1 } of edges) {
+    g.beginPath();
+    g.moveTo(x0, y0);
+    g.lineTo(x1, y1);
+    g.closePath();
+    g.stroke();
   }
-  for (const xn of range(10, w - 10)) {
-    drawRay(g, xn, h - 10, mx, my);
+
+  const r = 100;
+
+  if (mx !== undefined && my !== undefined) {
+    g.fillStyle = green;
+    g.beginPath();
+    g.arc(mx, my, r, 0, 2 * Math.PI);
+    g.closePath();
+    g.fill();
+
+    const e = edges[0];
+    const s = closestPointToCirlce(mx, my, e.x0, e.y0, e.x1, e.y1);
+    if (s !== undefined) {
+      if (between(s.x, e.x0, e.x1) && between(s.y, e.y0, e.y1)) {
+        g.fillStyle = violet;
+        g.fillRect(s.x - 10, s.y - 10, 20, 20);
+      }
+
+      const dx = s.x - mx;
+      const dy = s.y - my;
+      const dsq = dx * dx + dy * dy;
+      if (r * r > dsq) {
+        const alpha = Math.acos(Math.sqrt(dsq) / r);
+        const beta = Math.atan2(dy, dx);
+        const theta1 = beta + alpha;
+        const theta2 = beta - alpha;
+        const u1 = shiftPointAtAngle(mx, my, theta1, r);
+        const u2 = shiftPointAtAngle(mx, my, theta2, r);
+        if (between(u1.x, e.x0, e.x1) && between(u1.y, e.y0, e.y1)) {
+          g.fillStyle = cyan;
+          g.fillRect(u1.x - 10, u1.y - 10, 20, 20);
+        }
+        if (between(u2.x, e.x0, e.x1) && between(u2.y, e.y0, e.y1)) {
+          g.fillStyle = cyan;
+          g.fillRect(u2.x - 10, u2.y - 10, 20, 20);
+        }
+        g.fillStyle = yellow;
+        g.fillRect(u1.x - 5, u1.y - 5, 10, 10);
+        g.fillRect(u2.x - 5, u2.y - 5, 10, 10);
+      }
+
+      g.fillStyle = magenta;
+      g.fillRect(s.x - 5, s.y - 5, 10, 10);
+    }
   }
 };
