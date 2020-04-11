@@ -1,2 +1,2 @@
-const edges = [{ x0: 100, y0: 100, x1: 800, y1: 800 }];
+const edges = [{ x0: 200, y0: 200, x1: 700, y1: 700 }];
 const input = { x: undefined, y: undefined };

@@ -160,11 +160,11 @@ const draw = (g, w, h, mx, my) => {
   const r = 100;
 
   if (mx !== undefined && my !== undefined) {
-    g.fillStyle = green;
+    g.strokeStyle = green;
     g.beginPath();
     g.arc(mx, my, r, 0, 2 * Math.PI);
     g.closePath();
-    g.fill();
+    g.stroke();
 
     const e = edges[0];
     const s = closestPointToCirlce(mx, my, e.x0, e.y0, e.x1, e.y1);
@@ -180,21 +180,56 @@ const draw = (g, w, h, mx, my) => {
       if (r * r > dsq) {
         const alpha = Math.acos(Math.sqrt(dsq) / r);
         const beta = Math.atan2(dy, dx);
-        const theta1 = beta + alpha;
-        const theta2 = beta - alpha;
-        const u1 = shiftPointAtAngle(mx, my, theta1, r);
-        const u2 = shiftPointAtAngle(mx, my, theta2, r);
-        if (between(u1.x, e.x0, e.x1) && between(u1.y, e.y0, e.y1)) {
+        let theta = beta - alpha;
+        let omicron = beta + alpha;
+        const u = shiftPointAtAngle(mx, my, theta, r);
+        const v = shiftPointAtAngle(mx, my, omicron, r);
+        if (between(u.x, e.x0, e.x1) && between(u.y, e.y0, e.y1)) {
           g.fillStyle = cyan;
-          g.fillRect(u1.x - 10, u1.y - 10, 20, 20);
+          g.fillRect(u.x - 10, u.y - 10, 20, 20);
         }
-        if (between(u2.x, e.x0, e.x1) && between(u2.y, e.y0, e.y1)) {
+        if (between(v.x, e.x0, e.x1) && between(v.y, e.y0, e.y1)) {
           g.fillStyle = cyan;
-          g.fillRect(u2.x - 10, u2.y - 10, 20, 20);
+          g.fillRect(v.x - 10, v.y - 10, 20, 20);
         }
         g.fillStyle = yellow;
-        g.fillRect(u1.x - 5, u1.y - 5, 10, 10);
-        g.fillRect(u2.x - 5, u2.y - 5, 10, 10);
+        g.fillRect(u.x - 5, u.y - 5, 10, 10);
+        g.fillRect(v.x - 5, v.y - 5, 10, 10);
+
+        if (r * r > distanceSquared(mx, my, e.x0, e.y0)) {
+          g.fillStyle = red;
+          g.fillRect(e.x0 - 5, e.y0 - 5, 10, 10);
+        }
+        if (r * r > distanceSquared(mx, my, e.x1, e.y1)) {
+          g.fillStyle = red;
+          g.fillRect(e.x1 - 5, e.y1 - 5, 10, 10);
+        }
+
+        g.fillStyle = base3 + '77';
+        g.beginPath();
+        g.moveTo(mx, my);
+        g.arc(mx, my, r, 0, theta);
+        if (between(u.x, e.x0, e.x1) && between(u.y, e.y0, e.y1)) {
+          g.lineTo(u.x, u.y);
+        } else {
+          g.lineTo(e.x0, e.y0);
+          omicron = Math.atan2(e.y0 - my, e.x0 - mx);
+        }
+        if (between(v.x, e.x0, e.x1) && between(v.y, e.y0, e.y1)) {
+          g.lineTo(v.x, v.y);
+        } else {
+          g.lineTo(e.x1, e.y1);
+          omicron = Math.atan2(e.y1 - my, e.x1 - mx);
+        }
+        g.arc(mx, my, r, omicron, Math.PI * 2);
+        g.closePath();
+        g.fill();
+      } else {
+        g.fillStyle = base3 + '77';
+        g.beginPath();
+        g.arc(mx, my, r, 0, 2 * Math.PI);
+        g.closePath();
+        g.fill();
       }
 
       g.fillStyle = magenta;
