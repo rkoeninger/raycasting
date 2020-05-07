@@ -17,10 +17,10 @@ const green = '#859900';
 
 const between = (k, a, b) => Math.min(a, b) <= k && k <= Math.max(a, b);
 
-const distanceSquared = (x0, y0, x1, y1) => {
-  const dx = x1 - x0;
-  const dy = y1 - y0;
-  return dx * dx + dy * dy;
+const distance = (p, q) => {
+  const dx = p.x - q.x;
+  const dy = p.y - q.y;
+  return Math.sqrt(dx * dx + dy * dy);
 };
 
 const closestPointToCirlce = (cx, cy, px, py, qx, qy) => {
@@ -40,7 +40,7 @@ const shiftPointAtAngle = (x, y, a, r) => ({
 
 const minOf = xs => xs.reduce((m, c) => c < m ? c : m, Number.POSITIVE_INFINITY);
 
-const draw = (g, w, h, mx, my) => {
+const draw = (g, w, h, m) => {
   g.fillStyle = base03;
   g.fillRect(0, 0, w, h);
 
@@ -52,15 +52,17 @@ const draw = (g, w, h, mx, my) => {
     g.stroke();
   }
 
-  const minDistance = minOf([
-    ...objects.map(({ x, y, r }) => Math.sqrt(distanceSquared(x, y, mx, my)) - r),
-    mx,
-    my,
-    w - mx,
-    h - my]);
-  g.strokeStyle = orange;
-  g.beginPath();
-  g.arc(mx, my, Math.abs(minDistance), 0, 2 * Math.PI);
-  g.closePath();
-  g.stroke();
+  if (m) {
+    const minDistance = minOf([
+      ...objects.map(o => distance(o, m) - o.r),
+      m.x,
+      m.y,
+      w - m.x,
+      h - m.y]);
+    g.strokeStyle = orange;
+    g.beginPath();
+    g.arc(m.x, m.y, Math.abs(minDistance), 0, 2 * Math.PI);
+    g.closePath();
+    g.stroke();
+  }
 };

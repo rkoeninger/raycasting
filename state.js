@@ -1,5 +1,4 @@
-const edges = [{ x0: 200, y0: 200, x1: 700, y1: 700 }];
-const input = { x: undefined, y: undefined };
+let input;
 
 const objects = [
   { x: 100, y: 100, r: 25 },

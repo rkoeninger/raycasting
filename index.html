@@ -39,16 +39,14 @@ canvas {
       document.body.onresize = resize;
       resize();
       document.onmousemove = ({ clientX, clientY }) =>
-        draw(g, canvas.width, canvas.height, clientX, clientY);
+        draw(g, canvas.width, canvas.height, { x: clientX, y: clientY });
       document.onmouseleave = () =>
         draw(g, canvas.width, canvas.height);
       document.onmousedown = ({ clientX, clientY }) => {
-        if (input.x !== undefined && input.y !== undefined) {
-          edges.push({ x0: input.x, y0: input.y, x1: clientX, y1: clientY });
-          input.x = input.y = undefined;
+        if (input === undefined) {
+          input = { x: clientX, y: clientY };
         } else {
-          input.x = clientX;
-          input.y = clientY;
+          input = undefined;
         }
       };
     </script>
