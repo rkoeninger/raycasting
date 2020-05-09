@@ -15,50 +15,48 @@ const blue = '#268bd2';
 const cyan = '#2aa198';
 const green = '#859900';
 
-const between = (k, a, b) => Math.min(a, b) <= k && k <= Math.max(a, b);
+const distance = (dx, dy) => Math.sqrt(dx * dx + dy * dy);
 
-const distance = (p, q) => {
-  const dx = p.x - q.x;
-  const dy = p.y - q.y;
-  return Math.sqrt(dx * dx + dy * dy);
+const circleDistance = (c, p) => {
+  const dx = p.x - c.x;
+  const dy = p.y - c.y;
+  return distance(dx, dy) - c.r;
 };
 
-const closestPointToCirlce = (cx, cy, px, py, qx, qy) => {
-  const mpq = (qy - py) / (qx - px);
-  const kpq = py - mpq * px;
-  const mcs = -1 / mpq;
-  const kcs = cy - mcs * cx;
-  const x = (kpq - kcs) / (mcs - mpq);
-  const y = mcs * x + kcs;
-  return { x, y };
+const boxDistance = (b, p) => {
+  const ox = Math.abs(p.x - b.x) - b.w;
+  const oy = Math.abs(p.y - b.y) - b.h;
+  const d = distance(Math.max(ox, 0), Math.max(oy, 0));
+  const i = Math.max(Math.min(ox, 0), Math.min(oy, 0));
+  return d + i;
 };
-
-const shiftPointAtAngle = (x, y, a, r) => ({
-  x: x + Math.cos(a) * r,
-  y: y + Math.sin(a) * r
-});
 
 const minOf = xs => xs.reduce((m, c) => c < m ? c : m, Number.POSITIVE_INFINITY);
 
-const draw = (g, w, h, m) => {
+const draw = (g, sw, sh, m) => {
   g.fillStyle = base03;
-  g.fillRect(0, 0, w, h);
+  g.fillRect(0, 0, sw, sh);
 
   g.strokeStyle = blue;
-  for (const { x, y, r } of objects) {
+  for (const { x, y, r } of circles) {
     g.beginPath();
     g.arc(x, y, r, 0, 2 * Math.PI);
     g.closePath();
     g.stroke();
   }
 
+  for (const { x, y, w, h } of boxes) {
+    g.strokeRect(x - w, y - h, w * 2, h * 2);
+  }
+
   if (m) {
     const minDistance = minOf([
-      ...objects.map(o => distance(o, m) - o.r),
+      ...circles.map(c => circleDistance(c, m)),
+      ...boxes.map(b => boxDistance(b, m)),
       m.x,
       m.y,
-      w - m.x,
-      h - m.y]);
+      sw - m.x,
+      sh - m.y]);
     g.strokeStyle = orange;
     g.beginPath();
     g.arc(m.x, m.y, Math.abs(minDistance), 0, 2 * Math.PI);
