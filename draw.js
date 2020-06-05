@@ -15,6 +15,16 @@ const blue = '#268bd2';
 const cyan = '#2aa198';
 const green = '#859900';
 
+const range = (x0, xn, i = 1) => {
+  const xs = [];
+  for (x = x0; x < xn; x += i) {
+    xs.push(x);
+  }
+  return xs;
+};
+
+const angles = range(0, 2 * Math.PI, Math.PI / 16);
+
 const distance = (dx, dy) => Math.sqrt(dx * dx + dy * dy);
 
 const circleDistance = (c, p) => {
@@ -31,18 +41,33 @@ const boxDistance = (b, p) => {
   return d + i;
 };
 
-const minOf = xs => xs.reduce((m, c) => c < m ? c : m, Number.POSITIVE_INFINITY);
+const fitCircle = (sw, sh, p) => Math.min(
+  ...circles.map(c => circleDistance(c, p)),
+  ...boxes.map(b => boxDistance(b, p)),
+  p.x,
+  p.y,
+  sw - p.x,
+  sh - p.y);
+
+const translate = ({ x, y }, r, angle) => ({
+  x: x + r * Math.cos(angle),
+  y: y + r * Math.sin(angle)
+});
 
 const draw = (g, sw, sh, m) => {
+  g.strokeCircle = function (x, y, r) {
+    this.beginPath();
+    this.arc(x, y, Math.abs(r), 0, 2 * Math.PI);
+    this.closePath();
+    return this.stroke();
+  };
+
   g.fillStyle = base03;
   g.fillRect(0, 0, sw, sh);
 
   g.strokeStyle = blue;
   for (const { x, y, r } of circles) {
-    g.beginPath();
-    g.arc(x, y, r, 0, 2 * Math.PI);
-    g.closePath();
-    g.stroke();
+    g.strokeCircle(x, y, r);
   }
 
   for (const { x, y, w, h } of boxes) {
@@ -50,17 +75,15 @@ const draw = (g, sw, sh, m) => {
   }
 
   if (m) {
-    const minDistance = minOf([
-      ...circles.map(c => circleDistance(c, m)),
-      ...boxes.map(b => boxDistance(b, m)),
-      m.x,
-      m.y,
-      sw - m.x,
-      sh - m.y]);
+    const minDistance = fitCircle(sw, sh, m);
     g.strokeStyle = orange;
-    g.beginPath();
-    g.arc(m.x, m.y, Math.abs(minDistance), 0, 2 * Math.PI);
-    g.closePath();
-    g.stroke();
+    g.strokeCircle(m.x, m.y, minDistance);
+
+    for (const angle of angles) {
+      const p = translate(m, minDistance, angle);
+      const r = fitCircle(sw, sh, p);
+      g.strokeStyle = magenta;
+      g.strokeCircle(p.x, p.y, r);
+    }
   }
 };
