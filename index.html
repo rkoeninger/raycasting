@@ -6,6 +6,11 @@
     <script src="draw.js"></script>
   </head>
   <body>
+    <div class="button-panel">
+      <button id="panel1">Panel 1</button>
+      <button id="panel2">Panel 2</button>
+      <button id="panel3">Panel 3</button>
+    </div>
     <canvas></canvas>
     <style>
 html {
@@ -19,6 +24,18 @@ body {
     padding: 0 !important;
     width: 100% !important;
     height: 100% !important;
+  background-color: #073642;
+}
+button {
+  font-size: 100%;
+  font-family: inherit;
+  padding: 4px;
+  margin: 4px;
+  border: 0;
+  border-color: #93a1a1;
+  border-radius: 0;
+  border-width: 1px;
+  background-color: #657b83;
 }
 canvas {
     margin: 0 !important;
@@ -38,18 +55,18 @@ canvas {
       console.log(document.body.onresize); // This somehow allows onresize to work
       document.body.onresize = resize;
       resize();
-      document.onmousemove = ({ clientX, clientY }) =>
-        draw(g, canvas.width, canvas.height, { x: clientX, y: clientY });
-      document.onmouseleave = () =>
+      canvas.onmousemove = ({ offsetX, offsetY }) =>
+        draw(g, canvas.width, canvas.height, { x: offsetX, y: offsetY });
+      canvas.onmouseleave = () =>
         draw(g, canvas.width, canvas.height);
-      document.onmousedown = ({ clientX, clientY }) => {
+      canvas.onmousedown = ({ offsetX, offsetY }) => {
         if (input === undefined) {
-          input = { x: clientX, y: clientY };
+          input = { x: offsetX, y: offsetY };
         } else {
           input = undefined;
         }
       };
-      document.onkeyup = ({ keyCode }) => {
+      canvas.onkeyup = ({ keyCode }) => {
         if (keyCode === 189) {
           selectedAngle = (selectedAngle - 1 + angles.length) % angles.length;
           resize();
