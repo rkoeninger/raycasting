@@ -1,5 +1,7 @@
 let input;
 
+let selectedAngle = 20;
+
 const circles = [
   { x: 100, y: 100, r: 25 },
   { x: 400, y: 150, r: 40 },

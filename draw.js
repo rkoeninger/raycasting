@@ -55,9 +55,22 @@ const translate = ({ x, y }, r, angle) => ({
 });
 
 const draw = (g, sw, sh, m) => {
+  g.fillCircle = function (x, y, r) {
+    this.beginPath();
+    this.arc(x, y, Math.abs(r), 0, 2 * Math.PI);
+    this.closePath();
+    return this.fill();
+  };
   g.strokeCircle = function (x, y, r) {
     this.beginPath();
     this.arc(x, y, Math.abs(r), 0, 2 * Math.PI);
+    this.closePath();
+    return this.stroke();
+  };
+  g.strokeLine = function (x, y, x2, y2) {
+    this.beginPath();
+    this.moveTo(x, y);
+    this.lineTo(x2, y2);
     this.closePath();
     return this.stroke();
   };
@@ -79,11 +92,25 @@ const draw = (g, sw, sh, m) => {
     g.strokeStyle = orange;
     g.strokeCircle(m.x, m.y, minDistance);
 
+    let angleI = 0;
     for (const angle of angles) {
-      const p = translate(m, minDistance, angle);
-      const r = fitCircle(sw, sh, p);
-      g.strokeStyle = magenta;
-      g.strokeCircle(p.x, p.y, r);
+      let p = m;
+      let r = minDistance;
+      while (r > 1) {
+        p = translate(p, r, angle);
+        r = fitCircle(sw, sh, p);
+        if (angleI === selectedAngle) {
+          g.strokeStyle = magenta;
+          g.strokeCircle(p.x, p.y, r);
+        }
+      }
+      if (angleI === selectedAngle) {
+        g.fillStyle = green;
+        g.fillCircle(p.x, p.y, 4);
+        g.strokeStyle = yellow;
+        g.strokeLine(m.x, m.y, p.x, p.y);
+      }
+      angleI++;
     }
   }
 };
