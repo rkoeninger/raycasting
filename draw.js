@@ -55,24 +55,41 @@ const translate = ({ x, y }, r, angle) => ({
 });
 
 const draw = (g, sw, sh, m) => {
-  g.fillCircle = function (x, y, r) {
+  g.circle = function (x, y, r) {
     this.beginPath();
     this.arc(x, y, Math.abs(r), 0, 2 * Math.PI);
     this.closePath();
-    return this.fill();
+    return this;
   };
-  g.strokeCircle = function (x, y, r) {
-    this.beginPath();
-    this.arc(x, y, Math.abs(r), 0, 2 * Math.PI);
-    this.closePath();
-    return this.stroke();
-  };
-  g.strokeLine = function (x, y, x2, y2) {
+  g.line = function (x, y, x2, y2) {
     this.beginPath();
     this.moveTo(x, y);
     this.lineTo(x2, y2);
     this.closePath();
-    return this.stroke();
+    return this;
+  };
+  g.rect = function (x, y, w, h) {
+    this.beginPath();
+    this.moveTo(x, y);
+    this.lineTo(x + w, y);
+    this.lineTo(x + w, y + h);
+    this.lineTo(x, y + h);
+    this.closePath();
+    return this;
+  };
+  g.poly = function (p, ...ps) {
+    this.beginPath();
+    this.moveTo(p.x, p.y);
+    for (const q of ps) {
+      this.lineTo(q.x, q.y);
+    }
+    this.closePath();
+    return this;
+  };
+  g.strokeAndFill = function () {
+    g.fill();
+    g.stroke();
+    return this;
   };
 
   g.fillStyle = base03;
@@ -80,14 +97,15 @@ const draw = (g, sw, sh, m) => {
 
   g.strokeStyle = blue;
   for (const { x, y, r } of circles) {
-    g.strokeCircle(x, y, r);
+    g.circle(x, y, r).stroke();
   }
 
   for (const { x, y, w, h } of boxes) {
-    g.strokeRect(x - w, y - h, w * 2, h * 2);
+    g.rect(x - w, y - h, w * 2, h * 2).stroke();
   }
 
   if (m) {
+    const ps = [];
     const minDistance = fitCircle(sw, sh, m);
     for (const angle of angles) {
       let p = m;
@@ -96,10 +114,13 @@ const draw = (g, sw, sh, m) => {
         p = translate(p, r, angle);
         r = fitCircle(sw, sh, p);
       }
-      g.fillStyle = green;
-      g.fillCircle(p.x, p.y, 4);
-      g.strokeStyle = yellow;
-      g.strokeLine(m.x, m.y, p.x, p.y);
+      ps.push(p);
     }
+    g.fillStyle = yellow;
+    g.strokeStyle = yellow;
+    for (const i of range(0, ps.length - 1)) {
+      g.poly(m, ps[i], ps[i + 1]).strokeAndFill();
+    }
+    g.poly(m, ps[ps.length - 1], ps[0]).strokeAndFill();
   }
 };

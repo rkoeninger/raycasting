@@ -24,7 +24,7 @@ body {
     padding: 0 !important;
     width: 100% !important;
     height: 100% !important;
-  background-color: #073642;
+    background-color: #073642;
 }
 button {
   font-size: 100%;
@@ -60,11 +60,7 @@ canvas {
       canvas.onmouseleave = () =>
         draw(g, canvas.width, canvas.height);
       canvas.onmousedown = ({ offsetX, offsetY }) => {
-        if (input === undefined) {
-          input = { x: offsetX, y: offsetY };
-        } else {
-          input = undefined;
-        }
+        input = input === undefined ? { x: offsetX, y: offsetY } : undefined;
       };
       canvas.onkeyup = ({ keyCode }) => {
         if (keyCode === 189) {
