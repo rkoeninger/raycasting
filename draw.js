@@ -105,22 +105,33 @@ const draw = (g, sw, sh, m) => {
   }
 
   if (m) {
-    const ps = [];
-    const minDistance = fitCircle(sw, sh, m);
-    for (const angle of angles) {
-      let p = m;
-      let r = minDistance;
-      while (r > 1) {
-        p = translate(p, r, angle);
-        r = fitCircle(sw, sh, p);
+    if (input) {
+      g.strokeStyle = green;
+      if (selectedShape === 'box') {
+        const { x, y, w, h } = inputShape(m.x, m.y);
+        g.rect(x - w, y - h, w * 2, h * 2).stroke();
+      } else if (selectedShape === 'circle') {
+        const { x, y, r } = inputShape(m.x, m.y);
+        g.circle(x, y, r).stroke();
       }
-      ps.push(p);
+    } else {
+      const ps = [];
+      const minDistance = fitCircle(sw, sh, m);
+      for (const angle of angles) {
+        let p = m;
+        let r = minDistance;
+        while (r > 1) {
+          p = translate(p, r, angle);
+          r = fitCircle(sw, sh, p);
+        }
+        ps.push(p);
+      }
+      g.fillStyle = yellow;
+      g.strokeStyle = yellow;
+      for (const i of range(0, ps.length - 1)) {
+        g.poly(m, ps[i], ps[i + 1]).strokeAndFill();
+      }
+      g.poly(m, ps[ps.length - 1], ps[0]).strokeAndFill();
     }
-    g.fillStyle = yellow;
-    g.strokeStyle = yellow;
-    for (const i of range(0, ps.length - 1)) {
-      g.poly(m, ps[i], ps[i + 1]).strokeAndFill();
-    }
-    g.poly(m, ps[ps.length - 1], ps[0]).strokeAndFill();
   }
 };

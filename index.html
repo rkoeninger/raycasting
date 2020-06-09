@@ -60,15 +60,29 @@ canvas {
       canvas.onmouseleave = () =>
         draw(g, canvas.width, canvas.height);
       canvas.onmousedown = ({ offsetX, offsetY }) => {
-        input = input === undefined ? { x: offsetX, y: offsetY } : undefined;
+        if (input === undefined) {
+          input = { x: offsetX, y: offsetY };
+        } else {
+          if (selectedShape === 'box') {
+            boxes.push(inputShape(offsetX, offsetY));
+          } else if (selectedShape === 'circle') {
+            circles.push(inputShape(offsetX, offsetY));
+          }
+          input = undefined;
+        }
+        resize();
       };
-      canvas.onkeyup = ({ keyCode }) => {
+      document.onkeyup = ({ keyCode }) => {
         if (keyCode === 189) {
           selectedAngle = (selectedAngle - 1 + angles.length) % angles.length;
           resize();
         } else if (keyCode === 187) {
           selectedAngle = (selectedAngle + 1) % angles.length;
           resize();
+        } else if (keyCode === 82) {
+          selectedShape = 'box';
+        } else if (keyCode === 67) {
+          selectedShape = 'circle';
         } else {
           console.log(`unknown keyCode: ${keyCode}`);
         }
