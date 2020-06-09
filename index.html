@@ -75,17 +75,18 @@ canvas {
       document.onkeyup = ({ keyCode }) => {
         if (keyCode === 189) {
           selectedAngle = (selectedAngle - 1 + angles.length) % angles.length;
-          resize();
         } else if (keyCode === 187) {
           selectedAngle = (selectedAngle + 1) % angles.length;
-          resize();
         } else if (keyCode === 82) {
           selectedShape = 'box';
         } else if (keyCode === 67) {
           selectedShape = 'circle';
+        } else if (keyCode === 27) {
+          input = undefined;
         } else {
           console.log(`unknown keyCode: ${keyCode}`);
         }
+        resize();
       };
     </script>
   </body>
