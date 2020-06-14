@@ -15,16 +15,6 @@ const blue = '#268bd2';
 const cyan = '#2aa198';
 const green = '#859900';
 
-const range = (x0, xn, i = 1) => {
-  const xs = [];
-  for (x = x0; x < xn; x += i) {
-    xs.push(x);
-  }
-  return xs;
-};
-
-const angles = range(0, 2 * Math.PI, Math.PI / 256);
-
 const distance = (dx, dy) => Math.sqrt(dx * dx + dy * dy);
 
 const circleDistance = (c, p) => {
@@ -53,6 +43,54 @@ const translate = ({ x, y }, r, angle) => ({
   x: x + r * Math.cos(angle),
   y: y + r * Math.sin(angle)
 });
+
+const drawShadows = (g, sw, sh, m) => {
+  if (m && !input && (circles.length > 0 || boxes.length > 0)) {
+    const ps = [];
+    const minDistance = fitCircle(sw, sh, m);
+    for (const angle of angles) {
+      let p = m;
+      let r = minDistance;
+      while (r > 1) {
+        p = translate(p, r, angle);
+        r = fitCircle(sw, sh, p);
+      }
+      ps.push(p);
+    }
+    g.fillStyle = yellow;
+    g.strokeStyle = yellow;
+    for (const i of range(0, ps.length - 1)) {
+      g.poly(m, ps[i], ps[i + 1]).strokeAndFill();
+    }
+    g.poly(m, ps[ps.length - 1], ps[0]).strokeAndFill();
+  }
+};
+
+const drawLineOfSight = (g, sw, sh, m) => {
+  g.fillStyle = orange;
+  g.dot(target, 8).fill();
+
+  if (m && !input) {
+    g.strokeStyle = yellow;
+    g.line(m.x, m.y, target.x, target.y).stroke();
+  }
+};
+
+const drawSpirograph = (g, sw, sh, m) => {
+  if (m && !input) {
+    const minDistance = fitCircle(sw, sh, m);
+
+    g.strokeStyle = orange;
+    g.circle(m.x, m.y, minDistance).stroke();
+
+    for (const angle of secondaryAngles) {
+      const p = translate(m, minDistance, angle);
+      const r = fitCircle(sw, sh, p);
+      g.strokeStyle = magenta;
+      g.circle(p.x, p.y, r).stroke();
+    }
+  }
+};
 
 const draw = (g, sw, sh, m) => {
   g.circle = function (x, y, r) {
@@ -86,6 +124,9 @@ const draw = (g, sw, sh, m) => {
     this.closePath();
     return this;
   };
+  g.dot = function (p, size) {
+    return this.rect(p.x - size / 2, p.y - size / 2, size, size);
+  };
   g.strokeAndFill = function () {
     g.fill();
     g.stroke();
@@ -93,7 +134,7 @@ const draw = (g, sw, sh, m) => {
   };
 
   g.fillStyle = base03;
-  g.fillRect(0, 0, sw, sh);
+  g.rect(0, 0, sw, sh).fill();
 
   g.strokeStyle = blue;
   for (const { x, y, r } of circles) {
@@ -104,34 +145,22 @@ const draw = (g, sw, sh, m) => {
     g.rect(x - w, y - h, w * 2, h * 2).stroke();
   }
 
-  if (m) {
-    if (input) {
-      g.strokeStyle = green;
-      if (selectedShape === 'box') {
-        const { x, y, w, h } = inputShape(m.x, m.y);
-        g.rect(x - w, y - h, w * 2, h * 2).stroke();
-      } else if (selectedShape === 'circle') {
-        const { x, y, r } = inputShape(m.x, m.y);
-        g.circle(x, y, r).stroke();
-      }
-    } else {
-      const ps = [];
-      const minDistance = fitCircle(sw, sh, m);
-      for (const angle of angles) {
-        let p = m;
-        let r = minDistance;
-        while (r > 1) {
-          p = translate(p, r, angle);
-          r = fitCircle(sw, sh, p);
-        }
-        ps.push(p);
-      }
-      g.fillStyle = yellow;
-      g.strokeStyle = yellow;
-      for (const i of range(0, ps.length - 1)) {
-        g.poly(m, ps[i], ps[i + 1]).strokeAndFill();
-      }
-      g.poly(m, ps[ps.length - 1], ps[0]).strokeAndFill();
+  if (m && input) {
+    g.strokeStyle = green;
+    if (selectedShape === 'box') {
+      const { x, y, w, h } = inputShape(m.x, m.y);
+      g.rect(x - w, y - h, w * 2, h * 2).stroke();
+    } else if (selectedShape === 'circle') {
+      const { x, y, r } = inputShape(m.x, m.y);
+      g.circle(x, y, r).stroke();
     }
+  }
+
+  if (mode === 'shadows') {
+    drawShadows(g, sw, sh, m);
+  } else if (mode === 'line-of-sight') {
+    drawLineOfSight(g, sw, sh, m);
+  } else if (mode === 'spirograph') {
+    drawSpirograph(g, sw, sh, m);
   }
 };

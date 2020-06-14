@@ -6,43 +6,46 @@
     <script src="draw.js"></script>
   </head>
   <body>
-    <div class="button-panel">
-      <button id="panel1">Panel 1</button>
-      <button id="panel2">Panel 2</button>
-      <button id="panel3">Panel 3</button>
+    <div class="control-panel">
+      <button id="shadows-button" class="selected">Shadows</button>
+      <button id="line-of-sight-button">Line of Sight</button>
+      <button id="spirograph-button">Spirograph</button>
     </div>
     <canvas></canvas>
     <style>
-html {
-    margin: 0 !important;
-    padding: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-}
-body {
-    margin: 0 !important;
-    padding: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    background-color: #073642;
-}
-button {
-  font-size: 100%;
-  font-family: inherit;
-  padding: 4px;
-  margin: 4px;
-  border: 0;
-  border-color: #93a1a1;
-  border-radius: 0;
-  border-width: 1px;
-  background-color: #657b83;
-}
-canvas {
-    margin: 0 !important;
-    padding: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-}
+      html {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+      }
+      body {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        background-color: #073642;
+      }
+      canvas {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+      }
+      button {
+        font-size: 100%;
+        font-family: inherit;
+        padding: 4px;
+        margin: 4px;
+        border: 0;
+        border-color: #93a1a1;
+        border-radius: 0;
+        border-width: 1px;
+        background-color: #657b83;
+      }
+      button.selected {
+        background-color: #eee8d5;
+      }
     </style>
     <script>
       const canvas = document.querySelector('canvas');
@@ -72,22 +75,63 @@ canvas {
         }
         resize();
       };
+      const LEFT_BRACKET = 219;
+      const RIGHT_BRACKET = 221;
+      const PLUS = 187;
+      const MINUS = 189;
+      const ONE = 49;
+      const TWO = 50;
+      const ESC = 27;
+      const W = 87;
+      const A = 65;
+      const S = 83;
+      const D = 68;
       document.onkeyup = ({ keyCode }) => {
-        if (keyCode === 189) {
-          selectedAngle = (selectedAngle - 1 + angles.length) % angles.length;
-        } else if (keyCode === 187) {
-          selectedAngle = (selectedAngle + 1) % angles.length;
-        } else if (keyCode === 82) {
+        if (keyCode === PLUS) {
+          if (detail < 4096) {
+            setDetail(detail * 2);
+          }
+        } else if (keyCode === MINUS) {
+          if (detail > 2) {
+            setDetail(Math.floor(detail / 2));
+          }
+        } else if (keyCode === LEFT_BRACKET) {
+
+        } else if (keyCode === RIGHT_BRACKET) {
+
+        } else if (keyCode === ONE) {
           selectedShape = 'box';
-        } else if (keyCode === 67) {
+        } else if (keyCode === TWO) {
           selectedShape = 'circle';
-        } else if (keyCode === 27) {
+        } else if (keyCode === ESC) {
           input = undefined;
+        } else if (keyCode === W) {
+          target.y = Math.max(0, target.y - 50);
+        } else if (keyCode === A) {
+          target.x = Math.max(0, target.x - 50);
+        } else if (keyCode === S) {
+          target.y = Math.min(canvas.clientHeight, target.y + 50);
+        } else if (keyCode === D) {
+          target.x = Math.min(canvas.clientWidth, target.x + 50);
         } else {
           console.log(`unknown keyCode: ${keyCode}`);
         }
         resize();
       };
+      const switchMode = modeName => () => {
+        document.getElementById(mode + '-button').classList.remove('selected');
+        document.getElementById(modeName + '-button').classList.add('selected');
+        mode = modeName;
+        resize();
+      };
+      const modeNames = [
+        'shadows',
+        'line-of-sight',
+        'spirograph'
+      ];
+      for (const modeName of modeNames) {
+        document.getElementById(modeName + '-button').onclick = switchMode(modeName);
+      }
     </script>
   </body>
 </html>

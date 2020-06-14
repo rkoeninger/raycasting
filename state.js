@@ -1,11 +1,29 @@
 let input;
-
+let target = { x: 100, y: 100 };
+let mode = 'shadows';
 let selectedShape = 'box';
 
-let selectedAngle = 20;
+const range = (x0, xn, i = 1) => {
+  const xs = [];
+  for (; x0 < xn; x0 += i) {
+    xs.push(x0);
+  }
+  return xs;
+};
+
+let detail;
+let angles = [];
+let secondaryAngles = [];
+
+const setDetail = d => {
+  detail = d;
+  angles = range(0, 2 * Math.PI, Math.PI / d);
+  secondaryAngles = range(0, 2 * Math.PI, 16 * Math.PI / d);
+};
+
+setDetail(128);
 
 const circles = [];
-
 const boxes = [];
 
 const inputShape = (offsetX, offsetY) => {
