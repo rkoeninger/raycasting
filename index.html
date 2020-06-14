@@ -10,7 +10,12 @@
       <button id="shadows-button" class="selected">Shadows</button>
       <button id="spirograph-button">Spirograph</button>
       <button id="line-of-sight-button">Line of Sight</button>
-      <span>Detail: <span id="detail-label"></span></span>
+      <span>Detail: <span id="detail-label" class="control-label"></span></span>
+      <span>+/-: control detail level.</span>
+      <span>Click: draw.</span>
+      <span>ESC: cancel input.</span>
+      <span>1: box. 2: circle.</span>
+      <span>WASD: move LoS origin.</span>
     </div>
     <canvas></canvas>
     <style>
@@ -48,6 +53,9 @@
       button.selected {
         background-color: #eee8d5;
       }
+      .control-label {
+        color: #eee8d5;
+      }
     </style>
     <script>
       const canvas = document.querySelector('canvas');
@@ -59,7 +67,13 @@
         draw(g, canvas.width, canvas.height);
       };
       const refreshDetail = () => {
-        detailLabel.innerHTML = '' + detail;
+        if (mode === 'shadows') {
+          detailLabel.innerHTML = '' + shadowDetail;
+        } else if (mode === 'spirograph') {
+          detailLabel.innerHTML = '' + spiroDetail;
+        } else {
+          detailLabel.innerHTML = 'N/A';
+        }
       };
       refreshDetail();
       console.log(document.body.onresize); // This somehow allows onresize to work
@@ -82,8 +96,6 @@
         }
         resize();
       };
-      const LEFT_BRACKET = 219;
-      const RIGHT_BRACKET = 221;
       const PLUS = 187;
       const MINUS = 189;
       const ONE = 49;
@@ -95,19 +107,27 @@
       const D = 68;
       document.onkeyup = ({ keyCode }) => {
         if (keyCode === PLUS) {
-          if (detail < 4096) {
-            setDetail(detail * 2);
-            refreshDetail();
+          if (mode === 'shadows') {
+            if (shadowDetail < 4096) {
+              setShadowDetail(shadowDetail * 2);
+            }
+          } else if (mode === 'spirograph') {
+            if (spiroDetail < 4096) {
+              setSpiroDetail(spiroDetail * 2);
+            }
           }
+          refreshDetail();
         } else if (keyCode === MINUS) {
-          if (detail > 2) {
-            setDetail(Math.floor(detail / 2));
-            refreshDetail();
+          if (mode === 'shadows') {
+            if (shadowDetail > 2) {
+              setShadowDetail(Math.floor(shadowDetail / 2));
+            }
+          } else if (mode === 'spirograph') {
+            if (spiroDetail > 2) {
+              setSpiroDetail(Math.floor(spiroDetail / 2));
+            }
           }
-        } else if (keyCode === LEFT_BRACKET) {
-
-        } else if (keyCode === RIGHT_BRACKET) {
-
+          refreshDetail();
         } else if (keyCode === ONE) {
           selectedShape = 'box';
         } else if (keyCode === TWO) {
@@ -132,6 +152,7 @@
         document.getElementById(modeName + '-button').classList.add('selected');
         mode = modeName;
         resize();
+        refreshDetail();
       };
       const modeNames = [
         'shadows',

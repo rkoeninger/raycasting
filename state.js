@@ -11,17 +11,22 @@ const range = (x0, xn, i = 1) => {
   return xs;
 };
 
-let detail;
+let shadowDetail;
+let spiroDetail;
 let angles = [];
 let secondaryAngles = [];
 
-const setDetail = d => {
-  detail = d;
+const setShadowDetail = d => {
+  shadowDetail = d;
   angles = range(0, 2 * Math.PI, Math.PI / d);
-  secondaryAngles = range(0, 2 * Math.PI, 16 * Math.PI / d);
+};
+const setSpiroDetail = d => {
+  spiroDetail = d;
+  secondaryAngles = range(0, 2 * Math.PI, Math.PI / d);
 };
 
-setDetail(128);
+setShadowDetail(256);
+setSpiroDetail(16);
 
 const circles = [];
 const boxes = [];
