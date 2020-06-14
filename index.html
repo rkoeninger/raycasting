@@ -8,8 +8,9 @@
   <body>
     <div class="control-panel">
       <button id="shadows-button" class="selected">Shadows</button>
-      <button id="line-of-sight-button">Line of Sight</button>
       <button id="spirograph-button">Spirograph</button>
+      <button id="line-of-sight-button">Line of Sight</button>
+      <span>Detail: <span id="detail-label"></span></span>
     </div>
     <canvas></canvas>
     <style>
@@ -24,6 +25,7 @@
         padding: 0 !important;
         width: 100% !important;
         height: 100% !important;
+        color: #839496;
         background-color: #073642;
       }
       canvas {
@@ -50,11 +52,16 @@
     <script>
       const canvas = document.querySelector('canvas');
       const g = canvas.getContext('2d');
+      const detailLabel = document.getElementById('detail-label');
       const resize = () => {
         canvas.width = canvas.clientWidth;
         canvas.height = canvas.clientHeight;
         draw(g, canvas.width, canvas.height);
       };
+      const refreshDetail = () => {
+        detailLabel.innerHTML = '' + detail;
+      };
+      refreshDetail();
       console.log(document.body.onresize); // This somehow allows onresize to work
       document.body.onresize = resize;
       resize();
@@ -90,10 +97,12 @@
         if (keyCode === PLUS) {
           if (detail < 4096) {
             setDetail(detail * 2);
+            refreshDetail();
           }
         } else if (keyCode === MINUS) {
           if (detail > 2) {
             setDetail(Math.floor(detail / 2));
+            refreshDetail();
           }
         } else if (keyCode === LEFT_BRACKET) {
 
