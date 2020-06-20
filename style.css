@@ -1,0 +1,38 @@
+html {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+body {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden;
+  color: #839496;
+  background-color: #073642;
+}
+canvas {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+button {
+  font-size: 100%;
+  font-family: inherit;
+  padding: 4px;
+  margin: 4px;
+  border: 0;
+  border-color: #93a1a1;
+  border-radius: 0;
+  border-width: 1px;
+  background-color: #657b83;
+}
+button.selected {
+  background-color: #eee8d5;
+}
+.control-label {
+  color: #eee8d5;
+}

@@ -2,6 +2,11 @@
 <html>
   <head>
     <title>Raycasting</title>
+    <link href="style.css" rel="stylesheet" type="text/css">
+    <script>
+      const raycasting = {};
+    </script>
+    <script src="helpers.js"></script>
     <script src="state.js"></script>
     <script src="draw.js"></script>
   </head>
@@ -18,49 +23,10 @@
       <span>WASD: move LoS origin.</span>
     </div>
     <canvas></canvas>
-    <style>
-      html {
-        margin: 0 !important;
-        padding: 0 !important;
-        width: 100% !important;
-        height: 100% !important;
-      }
-      body {
-        margin: 0 !important;
-        padding: 0 !important;
-        width: 100% !important;
-        height: 100% !important;
-        overflow: hidden;
-        color: #839496;
-        background-color: #073642;
-      }
-      canvas {
-        margin: 0 !important;
-        padding: 0 !important;
-        width: 100% !important;
-        height: 100% !important;
-      }
-      button {
-        font-size: 100%;
-        font-family: inherit;
-        padding: 4px;
-        margin: 4px;
-        border: 0;
-        border-color: #93a1a1;
-        border-radius: 0;
-        border-width: 1px;
-        background-color: #657b83;
-      }
-      button.selected {
-        background-color: #eee8d5;
-      }
-      .control-label {
-        color: #eee8d5;
-      }
-    </style>
     <script>
       const canvas = document.querySelector('canvas');
       const g = canvas.getContext('2d');
+      raycasting.installCanvasHelpers(g);
       const detailLabel = document.getElementById('detail-label');
       const resize = () => {
         canvas.width = canvas.clientWidth;
