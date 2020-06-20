@@ -8,6 +8,7 @@
     </script>
     <script src="helpers.js"></script>
     <script src="state.js"></script>
+    <script src="input.js"></script>
     <script src="draw.js"></script>
   </head>
   <body>
@@ -28,98 +29,42 @@
       const g = canvas.getContext('2d');
       raycasting.installCanvasHelpers(g);
       const detailLabel = document.getElementById('detail-label');
-      const resize = () => {
+      raycasting.resize = () => {
         canvas.width = canvas.clientWidth;
         canvas.height = canvas.clientHeight;
-        draw(g, canvas.width, canvas.height);
+        raycasting.draw(g, canvas.width, canvas.height);
       };
-      const refreshDetail = () => {
-        if (mode === 'shadows') {
-          detailLabel.innerHTML = '' + shadowDetail;
-        } else if (mode === 'spirograph') {
-          detailLabel.innerHTML = '' + spiroDetail;
-        } else {
-          detailLabel.innerHTML = 'N/A';
-        }
-      };
-      refreshDetail();
+      raycasting.refreshDetail = () => detailLabel.innerHTML =
+        raycasting.mode === 'shadows' ? '' + raycasting.shadowDetail :
+        raycasting.mode === 'spirograph' ? '' + raycasting.spiroDetail :
+        'N/A';
       console.log(document.body.onresize); // This somehow allows onresize to work
-      document.body.onresize = resize;
-      resize();
+      document.body.onresize = raycasting.resize;
+      raycasting.resize();
+      raycasting.refreshDetail();
       canvas.onmousemove = ({ offsetX, offsetY }) =>
-        draw(g, canvas.width, canvas.height, { x: offsetX, y: offsetY });
+        raycasting.draw(g, canvas.width, canvas.height, { x: offsetX, y: offsetY });
       canvas.onmouseleave = () =>
-        draw(g, canvas.width, canvas.height);
+        raycasting.draw(g, canvas.width, canvas.height);
       canvas.onmousedown = ({ offsetX, offsetY }) => {
-        if (input === undefined) {
-          input = { x: offsetX, y: offsetY };
-        } else {
-          if (selectedShape === 'box') {
-            boxes.push(inputShape(offsetX, offsetY));
-          } else if (selectedShape === 'circle') {
-            circles.push(inputShape(offsetX, offsetY));
-          }
-          input = undefined;
-        }
-        resize();
+        raycasting.click(offsetX, offsetY);
+        raycasting.resize();
       };
-      const PLUS = 187;
-      const MINUS = 189;
-      const ONE = 49;
-      const TWO = 50;
-      const ESC = 27;
-      const W = 87;
-      const A = 65;
-      const S = 83;
-      const D = 68;
       document.onkeyup = ({ keyCode }) => {
-        if (keyCode === PLUS) {
-          if (mode === 'shadows') {
-            if (shadowDetail < 4096) {
-              setShadowDetail(shadowDetail * 2);
-            }
-          } else if (mode === 'spirograph') {
-            if (spiroDetail < 4096) {
-              setSpiroDetail(spiroDetail * 2);
-            }
-          }
-          refreshDetail();
-        } else if (keyCode === MINUS) {
-          if (mode === 'shadows') {
-            if (shadowDetail > 2) {
-              setShadowDetail(Math.floor(shadowDetail / 2));
-            }
-          } else if (mode === 'spirograph') {
-            if (spiroDetail > 2) {
-              setSpiroDetail(Math.floor(spiroDetail / 2));
-            }
-          }
-          refreshDetail();
-        } else if (keyCode === ONE) {
-          selectedShape = 'box';
-        } else if (keyCode === TWO) {
-          selectedShape = 'circle';
-        } else if (keyCode === ESC) {
-          input = undefined;
-        } else if (keyCode === W) {
-          target.y = Math.max(0, target.y - 50);
-        } else if (keyCode === A) {
-          target.x = Math.max(0, target.x - 50);
-        } else if (keyCode === S) {
-          target.y = Math.min(canvas.clientHeight, target.y + 50);
-        } else if (keyCode === D) {
-          target.x = Math.min(canvas.clientWidth, target.x + 50);
+        const handler = raycasting.keyInputs['' + keyCode];
+        if (handler) {
+          handler({ canvas });
+          raycasting.resize();
         } else {
           console.log(`unknown keyCode: ${keyCode}`);
         }
-        resize();
       };
       const switchMode = modeName => () => {
-        document.getElementById(mode + '-button').classList.remove('selected');
+        document.getElementById(raycasting.mode + '-button').classList.remove('selected');
         document.getElementById(modeName + '-button').classList.add('selected');
-        mode = modeName;
-        resize();
-        refreshDetail();
+        raycasting.mode = modeName;
+        raycasting.resize();
+        raycasting.refreshDetail();
       };
       const modeNames = [
         'shadows',
