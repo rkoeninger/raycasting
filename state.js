@@ -6,20 +6,18 @@
 
   raycasting.inputShape = (x, y) => {
     if (raycasting.input) {
-      const p = raycasting.input;
-      const q = { x, y };
-      const dx = p.x - q.x;
-      const dy = p.y - q.y;
+      const dx = raycasting.input.x - x;
+      const dy = raycasting.input.y - y;
       if (raycasting.selectedShape === 'box') {
         return {
-          x: Math.min(p.x, q.x),
-          y: Math.min(p.y, q.y),
+          x: Math.min(raycasting.input.x, x),
+          y: Math.min(raycasting.input.y, y),
           w: Math.abs(dx),
           h: Math.abs(dy)
         };
       } else if (raycasting.selectedShape === 'circle') {
         return {
-          ...p,
+          ...raycasting.input,
           r: Math.sqrt(dx * dx + dy * dy)
         };
       }

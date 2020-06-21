@@ -59,20 +59,19 @@
           console.log(`unknown keyCode: ${keyCode}`);
         }
       };
-      const switchMode = modeName => () => {
-        document.getElementById(raycasting.mode + '-button').classList.remove('selected');
-        document.getElementById(modeName + '-button').classList.add('selected');
-        raycasting.mode = modeName;
-        raycasting.resize();
-        raycasting.refreshDetail();
-      };
       const modeNames = [
         'shadows',
         'line-of-sight',
         'spirograph'
       ];
       for (const modeName of modeNames) {
-        document.getElementById(modeName + '-button').onclick = switchMode(modeName);
+        document.getElementById(modeName + '-button').onclick = () => {
+          document.getElementById(raycasting.mode + '-button').classList.remove('selected');
+          document.getElementById(modeName + '-button').classList.add('selected');
+          raycasting.mode = modeName;
+          raycasting.resize();
+          raycasting.refreshDetail();
+        };
       }
     </script>
   </body>

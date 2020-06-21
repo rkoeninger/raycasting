@@ -1,25 +1,17 @@
 {
   const plus = () => {
-    if (raycasting.mode === 'shadows') {
-      if (raycasting.shadows.detail < 4096) {
-        raycasting.shadows.detail = raycasting.shadows.detail * 2;
-      }
-    } else if (raycasting.mode === 'spirograph') {
-      if (raycasting.spirograph.detail < 4096) {
-        raycasting.spirograph.detail = raycasting.spirograph.detail * 2;
-      }
+    if (raycasting.mode === 'shadows' && raycasting.shadows.detail < 4096) {
+      raycasting.shadows.detail *= 2;
+    } else if (raycasting.mode === 'spirograph' && raycasting.spirograph.detail < 4096) {
+      raycasting.spirograph.detail *=  2;
     }
     raycasting.refreshDetail();
   };
   const minus = () => {
-    if (raycasting.mode === 'shadows') {
-      if (raycasting.shadows.detail > 2) {
-        raycasting.shadows.detail = Math.floor(raycasting.shadows.detail / 2);
-      }
-    } else if (raycasting.mode === 'spirograph') {
-      if (raycasting.spirograph.detail > 2) {
-        raycasting.spirograph.detail = Math.floor(raycasting.spirograph.detail / 2);
-      }
+    if (raycasting.mode === 'shadows' && raycasting.shadows.detail > 2) {
+      raycasting.shadows.detail = Math.floor(raycasting.shadows.detail / 2);
+    } else if (raycasting.mode === 'spirograph' && raycasting.spirograph.detail > 2) {
+      raycasting.spirograph.detail = Math.floor(raycasting.spirograph.detail / 2);
     }
     raycasting.refreshDetail();
   };
