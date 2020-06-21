@@ -16,6 +16,7 @@
       <button id="shadows-button" class="selected">Shadows</button>
       <button id="spirograph-button">Spirograph</button>
       <button id="line-of-sight-button">Line of Sight</button>
+      <button id="first-person-button">First Person</button>
       <span>Detail: <span id="detail-label" class="control-label"></span></span>
       <span>+/-: control detail level.</span>
       <span>Click: draw.</span>
@@ -37,6 +38,7 @@
       raycasting.refreshDetail = () => detailLabel.innerHTML =
         raycasting.mode === 'shadows' ? '' + raycasting.shadows.detail :
         raycasting.mode === 'spirograph' ? '' + raycasting.spirograph.detail :
+        raycasting.mode === 'first-person' ? '' + raycasting.firstPerson.detail :
         'N/A';
       console.log(document.body.onresize); // This somehow allows onresize to work
       document.body.onresize = raycasting.resize;
@@ -62,7 +64,8 @@
       const modeNames = [
         'shadows',
         'line-of-sight',
-        'spirograph'
+        'spirograph',
+        'first-person'
       ];
       for (const modeName of modeNames) {
         document.getElementById(modeName + '-button').onclick = () => {

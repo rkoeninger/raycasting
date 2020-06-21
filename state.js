@@ -1,6 +1,6 @@
 {
   raycasting.mode = 'shadows';
-  raycasting.target = { x: 100, y: 100, a: 0 };
+  raycasting.target = { x: 100, y: 400, a: 0 };
   raycasting.input = undefined;
   raycasting.selectedShape = 'box';
 
@@ -36,6 +36,17 @@
     detail: 16,
     get angles() {
       return Generator.range(0, 2 * Math.PI, Math.PI / this.detail);
+    }
+  };
+
+  raycasting.firstPerson = {
+    fov: Math.PI / 4,
+    detail: 64,
+    get angles() {
+      return Generator.range(
+        raycasting.target.a - this.fov / 2,
+        raycasting.target.a + this.fov / 2,
+        this.fov / this.detail);
     }
   };
 

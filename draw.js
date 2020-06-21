@@ -180,10 +180,8 @@
   const drawSpirograph = (g, sw, sh, m) => {
     if (m && !raycasting.input) {
       const minDistance = fitCircle(sw, sh, m);
-
       g.strokeStyle = orange;
       g.circle(m.x, m.y, minDistance).stroke();
-
       for (const angle of raycasting.spirograph.angles) {
         const p = translate(m, minDistance, angle);
         const r = fitCircle(sw, sh, p);
@@ -212,7 +210,31 @@
     }
   };
 
+  const drawFirstPerson = (g, sw, sh) => {
+    const columnWidth = sw / raycasting.firstPerson.detail;
+    let column = 0;
+    const minDistance = fitCircle(sw, sh, raycasting.target);
+    for (const angle of raycasting.firstPerson.angles) {
+      let p = raycasting.target;
+      let r = minDistance;
+      while (r > 1) {
+        p = translate(p, r, angle);
+        r = fitCircle(sw, sh, p);
+      }
+      const d = distance(p.x - raycasting.target.x, p.y - raycasting.target.y);
+      const shade = Math.floor((1 - d / Math.max(sw, sh)) * 255);
+      g.fillStyle = `rgb(${shade}, ${shade}, ${shade})`;
+      g.rect(column * columnWidth, 0, (column + 1) * columnWidth, sh).fill();
+      column++;
+    }
+  };
+
   raycasting.draw = (g, sw, sh, m) => {
+    if (raycasting.mode === 'first-person') {
+      drawFirstPerson(g, sw, sh);
+      return;
+    }
+
     g.fillStyle = base03;
     g.rect(0, 0, sw, sh).fill();
 
