@@ -40,11 +40,10 @@
       return this;
     };
   };
-  Array.range = (x0, xn, i = 1) => {
-    const xs = [];
-    for (; x0 < xn; x0 += i) {
-      xs.push(x0);
+  window.Generator = (function*(){}).prototype;
+  Generator.range = function* (x0, xn, i = 1) {
+    for (let x = x0; x < xn; x += i) {
+      yield x;
     }
-    return xs;
   };
 }

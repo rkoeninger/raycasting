@@ -35,8 +35,8 @@
         raycasting.draw(g, canvas.width, canvas.height);
       };
       raycasting.refreshDetail = () => detailLabel.innerHTML =
-        raycasting.mode === 'shadows' ? '' + raycasting.shadowDetail :
-        raycasting.mode === 'spirograph' ? '' + raycasting.spiroDetail :
+        raycasting.mode === 'shadows' ? '' + raycasting.shadows.detail :
+        raycasting.mode === 'spirograph' ? '' + raycasting.spirograph.detail :
         'N/A';
       console.log(document.body.onresize); // This somehow allows onresize to work
       document.body.onresize = raycasting.resize;

@@ -1,29 +1,27 @@
 {
   const plus = () => {
     if (raycasting.mode === 'shadows') {
-      if (raycasting.shadowDetail < 4096) {
-        raycasting.setShadowDetail(raycasting.shadowDetail * 2);
-        raycasting.refreshDetail();
+      if (raycasting.shadows.detail < 4096) {
+        raycasting.shadows.detail = raycasting.shadows.detail * 2;
       }
     } else if (raycasting.mode === 'spirograph') {
-      if (raycasting.spiroDetail < 4096) {
-        raycasting.setSpiroDetail(raycasting.spiroDetail * 2);
-        raycasting.refreshDetail();
+      if (raycasting.spirograph.detail < 4096) {
+        raycasting.spirograph.detail = raycasting.spirograph.detail * 2;
       }
     }
+    raycasting.refreshDetail();
   };
   const minus = () => {
     if (raycasting.mode === 'shadows') {
-      if (raycasting.shadowDetail > 2) {
-        raycasting.setShadowDetail(Math.floor(raycasting.shadowDetail / 2));
-        raycasting.refreshDetail();
+      if (raycasting.shadows.detail > 2) {
+        raycasting.shadows.detail = Math.floor(raycasting.shadows.detail / 2);
       }
     } else if (raycasting.mode === 'spirograph') {
-      if (raycasting.spiroDetail > 2) {
-        raycasting.setSpiroDetail(Math.floor(raycasting.spiroDetail / 2));
-        raycasting.refreshDetail();
+      if (raycasting.spirograph.detail > 2) {
+        raycasting.spirograph.detail = Math.floor(raycasting.spirograph.detail / 2);
       }
     }
+    raycasting.refreshDetail();
   };
   const PLUS = '187';
   const MINUS = '189';

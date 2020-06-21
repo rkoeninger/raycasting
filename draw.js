@@ -159,7 +159,7 @@
     if (m && !raycasting.input && (raycasting.circles.length > 0 || raycasting.boxes.length > 0)) {
       const ps = [];
       const minDistance = fitCircle(sw, sh, m);
-      for (const angle of raycasting.angles) {
+      for (const angle of raycasting.shadows.angles) {
         let p = m;
         let r = minDistance;
         while (r > 1) {
@@ -170,10 +170,26 @@
       }
       g.fillStyle = yellow;
       g.strokeStyle = yellow;
-      for (const i of Array.range(0, ps.length - 1)) {
+      for (const i of Generator.range(0, ps.length - 1)) {
         g.poly(m, ps[i], ps[i + 1]).strokeAndFill();
       }
       g.poly(m, ps[ps.length - 1], ps[0]).strokeAndFill();
+    }
+  };
+
+  const drawSpirograph = (g, sw, sh, m) => {
+    if (m && !raycasting.input) {
+      const minDistance = fitCircle(sw, sh, m);
+
+      g.strokeStyle = orange;
+      g.circle(m.x, m.y, minDistance).stroke();
+
+      for (const angle of raycasting.spirograph.angles) {
+        const p = translate(m, minDistance, angle);
+        const r = fitCircle(sw, sh, p);
+        g.strokeStyle = magenta;
+        g.circle(p.x, p.y, r).stroke();
+      }
     }
   };
 
@@ -191,22 +207,6 @@
       if (i) {
         g.fillStyle = magenta;
         g.dot(i, 8).fill();
-      }
-    }
-  };
-
-  const drawSpirograph = (g, sw, sh, m) => {
-    if (m && !raycasting.input) {
-      const minDistance = fitCircle(sw, sh, m);
-
-      g.strokeStyle = orange;
-      g.circle(m.x, m.y, minDistance).stroke();
-
-      for (const angle of raycasting.secondaryAngles) {
-        const p = translate(m, minDistance, angle);
-        const r = fitCircle(sw, sh, p);
-        g.strokeStyle = magenta;
-        g.circle(p.x, p.y, r).stroke();
       }
     }
   };
