@@ -195,7 +195,8 @@
 
   const drawLineOfSight = (g, sw, sh, m) => {
     g.fillStyle = orange;
-    g.dot(raycasting.target, 8).fill();
+    g.dot(raycasting.target, 16).fill();
+    g.dot(translate(raycasting.target, 12, raycasting.target.a), 8).fill();
     if (m && !raycasting.input) {
       g.strokeStyle = yellow;
       g.line(m.x, m.y, raycasting.target.x, raycasting.target.y).stroke();

@@ -23,6 +23,17 @@
     }
     raycasting.refreshDetail();
   };
+  const bound = (k, min, max) => Math.max(min, Math.min(max, k));
+  const step = (a, canvas) => {
+    raycasting.target.x = bound(raycasting.target.x + 10 * Math.cos(a), 0, canvas.width);
+    raycasting.target.y = bound(raycasting.target.y + 10 * Math.sin(a), 0, canvas.height);
+  };
+  const stepForward = ({ canvas }) => step(raycasting.target.a, canvas);
+  const stepBackward = ({ canvas }) => step(raycasting.target.a + Math.PI, canvas);
+  const stepLeft = ({ canvas }) => step(raycasting.target.a + Math.PI * 1.5, canvas);
+  const stepRight = ({ canvas }) => step(raycasting.target.a + Math.PI * 0.5, canvas);
+  const turnLeft = () => raycasting.target.a -= Math.PI * 0.125;
+  const turnRight = () => raycasting.target.a += Math.PI * 0.125;
   const PLUS = '187';
   const MINUS = '189';
   const ONE = '49';
@@ -32,16 +43,24 @@
   const A = '65';
   const S = '83';
   const D = '68';
+  const LEFT = '37';
+  const UP = '38';
+  const RIGHT = '39';
+  const DOWN = '40';
   raycasting.keyInputs = {
     [PLUS]: plus,
     [MINUS]: minus,
     [ONE]: () => raycasting.selectedShape = 'box',
     [TWO]: () => raycasting.selectedShape = 'circle',
     [ESC]: () => raycasting.input = undefined,
-    [W]: () => raycasting.target.y = Math.max(0, raycasting.target.y - 50),
-    [A]: () => raycasting.target.x = Math.max(0, raycasting.target.x - 50),
-    [S]: ({ canvas }) => raycasting.target.y = Math.min(canvas.clientHeight, raycasting.target.y + 50),
-    [D]: ({ canvas }) => raycasting.target.x = Math.min(canvas.clientWidth, raycasting.target.x + 50)
+    [LEFT]: turnLeft,
+    [RIGHT]: turnRight,
+    [UP]: stepForward,
+    [DOWN]: stepBackward,
+    [W]: stepForward,
+    [A]: stepLeft,
+    [S]: stepBackward,
+    [D]: stepRight
   };
   raycasting.click = (x, y) => {
     if (raycasting.input === undefined) {

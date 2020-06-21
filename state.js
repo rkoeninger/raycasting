@@ -1,6 +1,6 @@
 {
   raycasting.mode = 'shadows';
-  raycasting.target = { x: 100, y: 100 };
+  raycasting.target = { x: 100, y: 100, a: 0 };
   raycasting.input = undefined;
   raycasting.selectedShape = 'box';
 
