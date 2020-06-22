@@ -32,7 +32,7 @@
       return this;
     };
     g.dot = function (p, size) {
-      return this.rect(p.x - size / 2, p.y - size / 2, size, size);
+      return this.circle(p.x, p.y, size / 2);
     };
     g.strokeAndFill = function () {
       g.fill();

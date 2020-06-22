@@ -39,7 +39,7 @@
   };
 
   raycasting.firstPerson = {
-    fov: Math.PI / 4,
+    fov: Math.PI / 2,
     detail: 64,
     get angles() {
       return Generator.range(

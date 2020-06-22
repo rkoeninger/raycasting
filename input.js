@@ -4,7 +4,7 @@
       raycasting.shadows.detail *= 2;
     } else if (raycasting.mode === 'spirograph' && raycasting.spirograph.detail < 4096) {
       raycasting.spirograph.detail *=  2;
-    } else if (raycasting.mode === 'first-person' && raycasting.firstPerson.detail < 1024) {
+    } else if (raycasting.mode === 'first-person' && raycasting.firstPerson.detail < 2048) {
       raycasting.firstPerson.detail *= 2;
     }
     raycasting.refreshDetail();
@@ -28,8 +28,8 @@
   const stepBackward = ({ canvas }) => step(raycasting.target.a + Math.PI, canvas);
   const stepLeft = ({ canvas }) => step(raycasting.target.a + Math.PI * 1.5, canvas);
   const stepRight = ({ canvas }) => step(raycasting.target.a + Math.PI * 0.5, canvas);
-  const turnLeft = () => raycasting.target.a -= Math.PI / 16;
-  const turnRight = () => raycasting.target.a += Math.PI / 16;
+  const turnLeft = () => raycasting.target.a -= Math.PI / 32;
+  const turnRight = () => raycasting.target.a += Math.PI / 32;
   const PLUS = '187';
   const MINUS = '189';
   const ONE = '49';

@@ -192,9 +192,15 @@
   };
 
   const drawLineOfSight = (g, sw, sh, m) => {
+    const p = translate(raycasting.target, 24, raycasting.target.a);
+    const p1 = translate(raycasting.target, 24, raycasting.target.a + raycasting.firstPerson.fov / 2);
+    const p2 = translate(raycasting.target, 24, raycasting.target.a - raycasting.firstPerson.fov / 2);
     g.fillStyle = orange;
+    g.strokeStyle = orange;
     g.dot(raycasting.target, 16).fill();
-    g.dot(translate(raycasting.target, 12, raycasting.target.a), 8).fill();
+    g.line(raycasting.target.x, raycasting.target.y, p.x, p.y).stroke();
+    g.line(raycasting.target.x, raycasting.target.y, p1.x, p1.y).stroke();
+    g.line(raycasting.target.x, raycasting.target.y, p2.x, p2.y).stroke();
     if (m && !raycasting.input.isActive) {
       g.strokeStyle = yellow;
       g.line(m.x, m.y, raycasting.target.x, raycasting.target.y).stroke();
@@ -267,10 +273,10 @@
 
     if (raycasting.mode === 'shadows') {
       drawShadows(g, sw, sh, m);
-    } else if (raycasting.mode === 'line-of-sight') {
-      drawLineOfSight(g, sw, sh, m);
     } else if (raycasting.mode === 'spirograph') {
       drawSpirograph(g, sw, sh, m);
+    } else if (raycasting.mode === 'line-of-sight') {
+      drawLineOfSight(g, sw, sh, m);
     }
   };
 }
