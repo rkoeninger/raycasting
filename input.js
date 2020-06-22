@@ -46,9 +46,9 @@
   raycasting.keyInputs = {
     [PLUS]: plus,
     [MINUS]: minus,
-    [ONE]: () => raycasting.selectedShape = 'box',
-    [TWO]: () => raycasting.selectedShape = 'circle',
-    [ESC]: () => raycasting.input = undefined,
+    [ONE]: () => raycasting.input.shape = 'box',
+    [TWO]: () => raycasting.input.shape = 'circle',
+    [ESC]: () => raycasting.input.clear(),
     [LEFT]: turnLeft,
     [RIGHT]: turnRight,
     [UP]: stepForward,
@@ -59,15 +59,14 @@
     [D]: stepRight
   };
   raycasting.click = (x, y) => {
-    if (raycasting.input === undefined) {
-      raycasting.input = { x, y };
-    } else {
-      if (raycasting.selectedShape === 'box') {
-        raycasting.boxes.push(raycasting.inputShape(x, y));
-      } else if (raycasting.selectedShape === 'circle') {
-        raycasting.circles.push(raycasting.inputShape(x, y));
-      }
-      raycasting.input = undefined;
+    if (!raycasting.input.isActive) {
+      raycasting.input.origin = { x, y };
+    } else if (raycasting.input.shape === 'box') {
+      raycasting.boxes.push(raycasting.input.current(x, y));
+      raycasting.input.clear();
+    } else if (raycasting.input.shape === 'circle') {
+      raycasting.circles.push(raycasting.input.current(x, y));
+      raycasting.input.clear();
     }
   };
 }

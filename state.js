@@ -1,42 +1,41 @@
 {
   raycasting.mode = 'shadows';
   raycasting.target = { x: 100, y: 400, a: 0 };
-  raycasting.input = undefined;
-  raycasting.selectedShape = 'box';
 
-  raycasting.inputShape = (x, y) => {
-    if (raycasting.input) {
-      const dx = raycasting.input.x - x;
-      const dy = raycasting.input.y - y;
-      if (raycasting.selectedShape === 'box') {
-        return {
-          x: Math.min(raycasting.input.x, x),
-          y: Math.min(raycasting.input.y, y),
-          w: Math.abs(dx),
-          h: Math.abs(dy)
-        };
-      } else if (raycasting.selectedShape === 'circle') {
-        return {
-          ...raycasting.input,
-          r: Math.sqrt(dx * dx + dy * dy)
-        };
+  raycasting.input = {
+    origin: undefined,
+    shape: 'box',
+    get isActive() { return this.origin !== undefined; },
+    clear() { this.origin = undefined; },
+    current(x, y) {
+      if (this.origin) {
+        const dx = this.origin.x - x;
+        const dy = this.origin.y - y;
+        if (this.shape === 'box') {
+          return {
+            x: Math.min(this.origin.x, x),
+            y: Math.min(this.origin.y, y),
+            w: Math.abs(dx),
+            h: Math.abs(dy)
+          };
+        } else if (this.shape === 'circle') {
+          return {
+            ...this.origin,
+            r: Math.sqrt(dx * dx + dy * dy)
+          };
+        }
       }
     }
-    return undefined;
   };
 
   raycasting.shadows = {
     detail: 256,
-    get angles() {
-      return Generator.range(0, 2 * Math.PI, Math.PI / this.detail);
-    }
+    get angles() { return Generator.range(0, 2 * Math.PI, Math.PI / this.detail); }
   };
 
   raycasting.spirograph = {
     detail: 16,
-    get angles() {
-      return Generator.range(0, 2 * Math.PI, Math.PI / this.detail);
-    }
+    get angles() { return Generator.range(0, 2 * Math.PI, Math.PI / this.detail); }
   };
 
   raycasting.firstPerson = {

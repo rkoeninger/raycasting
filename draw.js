@@ -156,7 +156,7 @@
   ]);
 
   const drawShadows = (g, sw, sh, m) => {
-    if (m && !raycasting.input && (raycasting.circles.length > 0 || raycasting.boxes.length > 0)) {
+    if (m && !raycasting.input.isActive && (raycasting.circles.length > 0 || raycasting.boxes.length > 0)) {
       const ps = [];
       const minDistance = fitCircle(sw, sh, m);
       for (const angle of raycasting.shadows.angles) {
@@ -178,7 +178,7 @@
   };
 
   const drawSpirograph = (g, sw, sh, m) => {
-    if (m && !raycasting.input) {
+    if (m && !raycasting.input.isActive) {
       const minDistance = fitCircle(sw, sh, m);
       g.strokeStyle = orange;
       g.circle(m.x, m.y, minDistance).stroke();
@@ -195,7 +195,7 @@
     g.fillStyle = orange;
     g.dot(raycasting.target, 16).fill();
     g.dot(translate(raycasting.target, 12, raycasting.target.a), 8).fill();
-    if (m && !raycasting.input) {
+    if (m && !raycasting.input.isActive) {
       g.strokeStyle = yellow;
       g.line(m.x, m.y, raycasting.target.x, raycasting.target.y).stroke();
       const i = closest(raycasting.target, [
@@ -247,13 +247,13 @@
       g.rect(x - w, y - h, w * 2, h * 2).stroke();
     }
 
-    if (m && raycasting.input) {
+    if (m && raycasting.input.isActive) {
       g.strokeStyle = green;
-      if (raycasting.selectedShape === 'box') {
-        const { x, y, w, h } = raycasting.inputShape(m.x, m.y);
+      if (raycasting.input.shape === 'box') {
+        const { x, y, w, h } = raycasting.input.current(m.x, m.y);
         g.rect(x - w, y - h, w * 2, h * 2).stroke();
-      } else if (raycasting.selectedShape === 'circle') {
-        const { x, y, r } = raycasting.inputShape(m.x, m.y);
+      } else if (raycasting.input.shape === 'circle') {
+        const { x, y, r } = raycasting.input.current(m.x, m.y);
         g.circle(x, y, r).stroke();
       }
     }
