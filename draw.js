@@ -211,6 +211,10 @@
   };
 
   const drawFirstPerson = (g, sw, sh) => {
+    g.fillStyle = base0;
+    g.rect(0, 0, sw, sh / 2).fill();
+    g.fillStyle = base03;
+    g.rect(0, sh / 2, sw, sh / 2).fill();
     const columnWidth = sw / raycasting.firstPerson.detail;
     let column = 0;
     const minDistance = fitCircle(sw, sh, raycasting.target);
@@ -222,9 +226,12 @@
         r = fitCircle(sw, sh, p);
       }
       const d = distance(p.x - raycasting.target.x, p.y - raycasting.target.y);
-      const shade = Math.floor((1 - d / Math.max(sw, sh)) * 255);
+      const factor = 1 - d / Math.max(sw, sh);
+      const shade = Math.floor(factor * 255);
+      const height = Math.ceil(factor * sh);
       g.fillStyle = `rgb(${shade}, ${shade}, ${shade})`;
-      g.rect(column * columnWidth, 0, (column + 1) * columnWidth, sh).fill();
+      g.strokeStyle = `rgb(${shade}, ${shade}, ${shade})`;
+      g.rect(column * columnWidth, (sh - height) / 2, columnWidth, height).strokeAndFill();
       column++;
     }
   };
