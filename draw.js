@@ -202,16 +202,20 @@
     g.line(raycasting.target.x, raycasting.target.y, p1.x, p1.y).stroke();
     g.line(raycasting.target.x, raycasting.target.y, p2.x, p2.y).stroke();
     if (m && !raycasting.input.isActive) {
-      g.strokeStyle = yellow;
-      g.line(m.x, m.y, raycasting.target.x, raycasting.target.y).stroke();
+      m = translate(m, 4096, Math.atan2(m.y - raycasting.target.y, m.x - raycasting.target.x));
       const i = closest(raycasting.target, [
         ...intersections(raycasting.target, m, 0, 0, sw, sh),
         ...raycasting.boxes.flatMap(b => intersections(raycasting.target, m, b.x - b.w, b.y - b.h, b.w * 2, b.h * 2)),
         ...raycasting.circles.flatMap(c => circleSegmentIntersection(raycasting.target.x, raycasting.target.y, m.x, m.y, c.x, c.y, c.r))
       ]);
       if (i) {
+        g.strokeStyle = yellow;
+        g.line(i.x, i.y, raycasting.target.x, raycasting.target.y).stroke();
         g.fillStyle = magenta;
         g.dot(i, 8).fill();
+      } else {
+        g.strokeStyle = yellow;
+        g.line(m.x, m.y, raycasting.target.x, raycasting.target.y).stroke();
       }
     }
   };
