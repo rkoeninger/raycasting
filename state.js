@@ -1,6 +1,6 @@
 {
   raycasting.mode = 'shadows';
-  raycasting.target = { x: 100, y: 400, a: 0 };
+  raycasting.target = { x: 100, y: 400, a: 0, fov: Math.PI / 2 };
 
   raycasting.input = {
     origin: undefined,
@@ -39,13 +39,12 @@
   };
 
   raycasting.firstPerson = {
-    fov: Math.PI / 2,
     detail: 64,
     get angles() {
       return Generator.range(
-        raycasting.target.a - this.fov / 2,
-        raycasting.target.a + this.fov / 2,
-        this.fov / this.detail);
+        raycasting.target.a - raycasting.target.fov / 2,
+        raycasting.target.a + raycasting.target.fov / 2,
+        raycasting.target.fov / this.detail);
     }
   };
 

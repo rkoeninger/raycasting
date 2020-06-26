@@ -193,8 +193,8 @@
 
   const drawLineOfSight = (g, sw, sh, m) => {
     const p = translate(raycasting.target, 24, raycasting.target.a);
-    const p1 = translate(raycasting.target, 24, raycasting.target.a + raycasting.firstPerson.fov / 2);
-    const p2 = translate(raycasting.target, 24, raycasting.target.a - raycasting.firstPerson.fov / 2);
+    const p1 = translate(raycasting.target, 24, raycasting.target.a + raycasting.target.fov / 2);
+    const p2 = translate(raycasting.target, 24, raycasting.target.a - raycasting.target.fov / 2);
     g.fillStyle = orange;
     g.strokeStyle = orange;
     g.dot(raycasting.target, 16).fill();
@@ -236,9 +236,11 @@
         r = fitCircle(sw, sh, p);
       }
       const d = distance(p.x - raycasting.target.x, p.y - raycasting.target.y);
+      const d2 = d * Math.cos(angle - raycasting.target.a);
       const factor = 1 - d / Math.max(sw, sh);
+      const factor2 = 1 - d2 / Math.max(sw, sh);
       const shade = Math.floor(factor * 255);
-      const height = Math.ceil(factor * sh);
+      const height = Math.ceil(factor2 * sh);
       g.fillStyle = `rgb(${shade}, ${shade}, ${shade})`;
       g.strokeStyle = `rgb(${shade}, ${shade}, ${shade})`;
       g.rect(column * columnWidth, (sh - height) / 2, columnWidth, height).strokeAndFill();
